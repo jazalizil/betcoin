@@ -6,8 +6,9 @@ import {
   RocketLeaguePlaylistResponse,
   RocketLeagueProfileResponse,
 } from './rocket-league.types';
+import { API } from './api';
 
-export class RocketLeagueAPI {
+class RocketLeagueAPI extends API {
   baseURL = 'https://api.tracker.gg/api/v2/rocket-league/standard';
 
   private getProfileTransformer(response: RocketLeagueProfileResponse) {
@@ -45,3 +46,5 @@ export class RocketLeagueAPI {
       .pipe(map(response => response as RocketLeagueProfileResponse));
   }
 }
+
+export const rlAPI = Object.freeze(new RocketLeagueAPI());

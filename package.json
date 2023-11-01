@@ -10,8 +10,16 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.11",
+    "@react-navigation/core": "^6.4.10",
+    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/stack": "^6.3.20",
+    "fast-deep-equal": "^3.1.3",
     "react": "18.2.0",
     "react-native": "0.72.4",
+    "react-native-mmkv-storage": "^0.9.1",
+    "react-native-safe-area-context": "^4.7.4",
+    "react-native-screens": "^3.27.0",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
