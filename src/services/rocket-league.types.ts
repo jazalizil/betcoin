@@ -93,6 +93,24 @@ export type RocketLeagueProfileResponse = {
   };
 };
 
+export type RocketLeagueProfile = {
+  platforInfo: RocketLeagueProfileResponse['data']['platformInfo'];
+  info: {
+    avatar: string;
+    userId: string;
+    countryCode: string;
+  };
+  overview: {
+    wins: number;
+    goals: number;
+    mvps: number;
+    saves: number;
+    assists: number;
+    shots: number;
+  };
+  matches: object;
+};
+
 export enum RocketLeaguePlatform {
   EPIC = 'epic',
   STEAM = 'steam',

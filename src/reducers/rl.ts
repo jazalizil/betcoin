@@ -3,12 +3,7 @@ import {
   RocketLeagueProfileResponse,
 } from '../services/rocket-league.types';
 import { Reducer } from 'react';
-import { Action } from './typings';
-
-type RLReducerState = {
-  profile: RocketLeagueProfileResponse | null;
-  platform: RocketLeaguePlatform;
-};
+import { Action, RLReducerState } from './typings';
 
 export enum rlActions {
   SET_PROFILE = 'SET_PROFILE',
@@ -40,6 +35,8 @@ export const rlReducer: Reducer<RLReducerState, Action<RLActionHandler>> = (
         ...state,
         platform: action.data as RocketLeaguePlatform,
       };
+    default:
+      return state;
   }
 };
 
