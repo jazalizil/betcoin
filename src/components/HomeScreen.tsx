@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import {
   RocketLeaguePlatform,
-  RocketLeagueProfileResponse,
+  RocketLeagueProfile,
 } from '../services/rocket-league.types';
 import { AjaxError } from 'rxjs/ajax';
 import {
@@ -20,12 +20,14 @@ export const HomeScreen: React.FC = () => {
     rlInitialState,
     RL_STORAGE_KEY,
   );
-  const [error, setError] = useState<AjaxError>();
+  const [error, setError] = useState<AjaxError | null>(null);
+  const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('rocketjaza');
   const [usernameInputVisible, setUsernameInputVisible] = useState(false);
+  const apiTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const setProfile = useCallback(
-    (data: RocketLeagueProfileResponse) =>
+    (data: RocketLeagueProfile) =>
       dispatch({ type: rlActions.SET_PROFILE, data }),
     [dispatch],
   );
@@ -37,6 +39,7 @@ export const HomeScreen: React.FC = () => {
         .subscribe({
           next: setProfile,
           error: setError,
+          complete: () => setLoading(false),
         });
 
       return () => subscription.unsubscribe();
@@ -48,24 +51,43 @@ export const HomeScreen: React.FC = () => {
       return;
     }
     refreshProfile(username, rlReducer.platform);
-  }, [refreshProfile, rlReducer, username]);
+  }, []);
+
+  useEffect(() => {
+    if (apiTimer.current) {
+      clearTimeout(apiTimer.current);
+      apiTimer.current = null;
+    }
+    apiTimer.current = setTimeout(() => {
+      setError(null);
+      setLoading(true);
+      refreshProfile(username, rlReducer.platform);
+    }, 2500);
+  }, [refreshProfile, rlReducer.platform, username]);
 
   return (
-    <View style={{ backgroundColor: 'green', flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
       <View style={{ paddingHorizontal: 42 }}>
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => setUsernameInputVisible(!usernameInputVisible)}>
           <Text
             style={{ fontSize: 15, textAlign: 'center', fontWeight: 'bold' }}>
-            {`Hello ${rlReducer.profile?.platformInfo.platformUserIdentifier}`}
+            {`Hello ${
+              rlReducer.profile?.platformInfo?.platformUserIdentifier || ''
+            }`}
           </Text>
         </TouchableOpacity>
         <TextInput
           onChangeText={setUsername}
           value={username}
           style={{
-            display: usernameInputVisible ? 'none' : 'block',
+            display: usernameInputVisible ? 'none' : 'flex',
             width: 250,
             height: 42,
             borderStyle: 'solid',
@@ -74,6 +96,11 @@ export const HomeScreen: React.FC = () => {
             borderWidth: 1,
           }}
         />
+        {loading && (
+          <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'blue' }}>
+            Loading...
+          </Text>
+        )}
         {error && (
           <Text style={{ color: 'red', fontWeight: 'bold' }}>
             {JSON.stringify(error)}

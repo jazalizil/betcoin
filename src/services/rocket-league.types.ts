@@ -94,7 +94,7 @@ export type RocketLeagueProfileResponse = {
 };
 
 export type RocketLeagueProfile = {
-  platforInfo: RocketLeagueProfileResponse['data']['platformInfo'];
+  platformInfo: RocketLeagueProfileResponse['data']['platformInfo'];
   info: {
     avatar: string;
     userId: string;

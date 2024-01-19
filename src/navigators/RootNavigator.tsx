@@ -1,11 +1,15 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Screens } from './RootNavigator.constants';
 import { HomeScreen } from '../components/HomeScreen';
+import { createStackNavigator } from '@react-navigation/stack';
 
-const RootTabNavigator = createBottomTabNavigator();
+const RLStackNavigator = createStackNavigator();
 
 export const RootNavigator = () => (
-  <RootTabNavigator.Navigator>
-    <RootTabNavigator.Screen name={Screens.Home} component={HomeScreen} />
-  </RootTabNavigator.Navigator>
+  <RLStackNavigator.Navigator>
+    <RLStackNavigator.Screen
+      name={Screens.RL}
+      component={HomeScreen}
+      options={{ header: () => null }}
+    />
+  </RLStackNavigator.Navigator>
 );

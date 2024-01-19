@@ -1,3 +1,7 @@
 export const Screens = {
-  Home: 'HOME_SCREEN',
+  RL: 'RL_SCREEN',
+};
+
+export const Navigators = {
+  RL: 'RL_NAVIGATOR',
 };

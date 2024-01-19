@@ -4,6 +4,7 @@ import {
   RocketLeagueOverviewResponse,
   RocketLeaguePlatform,
   RocketLeaguePlaylistResponse,
+  RocketLeagueProfile,
   RocketLeagueProfileResponse,
 } from './rocket-league.types';
 import { API } from './api';
@@ -11,7 +12,9 @@ import { API } from './api';
 class RocketLeagueAPI extends API {
   baseURL = 'https://api.tracker.gg/api/v2/rocket-league/standard';
 
-  private getProfileTransformer(response: RocketLeagueProfileResponse) {
+  private getProfileTransformer(
+    response: RocketLeagueProfileResponse,
+  ): RocketLeagueProfile {
     const overview = response.data.segments.find(
       segment => segment.type === 'overview',
     ) as RocketLeagueOverviewResponse;
@@ -21,9 +24,9 @@ class RocketLeagueAPI extends API {
     return {
       platformInfo: response.data.platformInfo,
       info: {
-        avatar: response.data.userInfo.customAvatarUrl,
-        userId: response.data.userInfo.userId,
-        countryCode: response.data.userInfo.countryCode,
+        avatar: response.data.userInfo.customAvatarUrl || '',
+        userId: response.data.userInfo.userId || '',
+        countryCode: response.data.userInfo.countryCode || '',
       },
       overview: {
         wins: overview.stats.wins.value,
@@ -40,10 +43,12 @@ class RocketLeagueAPI extends API {
   getProfile(
     username: string,
     platform: RocketLeaguePlatform,
-  ): Observable<RocketLeagueProfileResponse> {
+  ): Observable<RocketLeagueProfile> {
     return ajax
-      .getJSON(`${this.baseURL}/profile/${platform}/${username}`)
-      .pipe(map(response => response as RocketLeagueProfileResponse));
+      .getJSON<RocketLeagueProfileResponse>(
+        `${this.baseURL}/profile/${platform}/${username}`,
+      )
+      .pipe(map(this.getProfileTransformer));
   }
 }
 
